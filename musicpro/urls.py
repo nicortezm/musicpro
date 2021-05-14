@@ -21,8 +21,12 @@ from django.conf import settings
 from . import views
 
 urlpatterns = [
+    path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
     path('',views.home, name='home'),
     # path('tienda/',include('tienda.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+admin.site.site_header = "Administración MusicPro"
+admin.site.site_title = "MusicPro"
