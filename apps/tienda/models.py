@@ -30,8 +30,8 @@ class Product(models.Model):
 
     # Agregar Foreingkey marca.
     # Agregar serial.
-    created_date = models.DateField(auto_now_add=True)
-    modified_date = models.DateField(auto_now_add=True)
+    created_date = models.DateField("Fecha creación",auto_now_add=True)
+    modified_date = models.DateField("Fecha modificación",auto_now_add=True)
 
     class Meta:
         verbose_name = 'producto'
