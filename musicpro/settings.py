@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'tienda',
+    'carts',
     'django.contrib.humanize'
 ]
 
@@ -75,6 +76,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'tienda.context_processors.menu_links',
+                'carts.context_processors.counter',
             ],
         },
     },
