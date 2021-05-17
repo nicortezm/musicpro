@@ -24,6 +24,16 @@ class RegistrationForm(forms.ModelForm):
         model = Account
         fields = ['first_name', 'last_name', 'email', 'password']
 
+    def clean(self):
+        cleanned_data = super(RegistrationForm, self).clean()
+        password = cleanned_data.get('password')
+        confirm_password = cleanned_data.get('confirm_password')
+
+        if password != confirm_password:
+            raise forms.ValidationError(
+                'Las contraseñas deben ser iguales!'
+            )
+
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         for field in self.fields:
