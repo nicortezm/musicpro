@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from django.contrib.messages import constants as messages
 from pathlib import Path
 import sys
 import os
@@ -143,7 +144,7 @@ STATICFILES_DIRS = [
 
 # media files configuration
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media' 
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -158,9 +159,9 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 JET_THEMES = [
     {
-        'theme': 'default', # theme folder name
-        'color': '#47bac1', # color of the theme's button in user menu
-        'title': 'Default' # theme title
+        'theme': 'default',  # theme folder name
+        'color': '#47bac1',  # color of the theme's button in user menu
+        'title': 'Default'  # theme title
     },
     {
         'theme': 'green',
@@ -192,3 +193,9 @@ JET_THEMES = [
 JET_SIDE_MENU_COMPACT = True
 
 JET_CHANGE_FORM_SIBLING_LINKS = True
+
+# Mensajes de django
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
