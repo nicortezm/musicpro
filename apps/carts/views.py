@@ -32,10 +32,12 @@ def add_cart(request,product_id):
             cart = cart,
         )
         cart_item.save()
-
-    # refrescar = '/tienda/' + str(product.category.slug) + '/'+ str(product.slug)
-    # return redirect(refrescar)
+    # if 'cart' in str(request.path):
     return redirect('cart')
+    # else:
+        # refrescar = '/tienda/' + str(product.category.slug) + '/'+ str(product.slug)
+        # return redirect(refrescar)
+        
 
 def remove_cart(request,product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
