@@ -1,7 +1,9 @@
-from django.contrib import messages
+from django.contrib import messages, auth
 from .forms import RegistrationForm
 from django.shortcuts import redirect, render
 from .models import Account
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 
@@ -29,8 +31,24 @@ def register(request):
 
 
 def login(request):
+    if request.method == "POST":
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user = auth.authenticate(email=email, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            # messages.success(request,'Has iniciado sesión exitosamente.')
+            return redirect('home')
+        else:
+            messages.error(request, 'Datos incorrectos. Intente nuevamente')
+            return redirect('login')
     return render(request, 'accounts/login.html')
 
 
+@login_required(login_url='login')
 def logout(request):
-    return render(request, 'accounts/logout.html')
+    auth.logout(request)
+    messages.success(request, 'Has cerrado sesión correctamente')
+    return redirect('login')
