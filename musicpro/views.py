@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from tienda.models import Product
 # Create your views here.
+
+
 def home(request):
-    products = Product.objects.all().filter(is_available=True)
+    products = Product.objects.all().filter(
+        is_available=True).order_by('-id')[:12]
     context = {
         'products': products,
     }
-    return render(request, 'home.html',context)
+    return render(request, 'home.html', context)
