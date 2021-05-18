@@ -199,3 +199,12 @@ JET_CHANGE_FORM_SIBLING_LINKS = True
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+
+# Configuración Correo SMTP
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'djangodwy@gmail.com'
+EMAIL_HOST_PASSWORD = 'N@ncybern4l'
+EMAIL_USE_TLS = True

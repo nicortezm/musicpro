@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+Hola {{user.first_name | capfirst}},
+
+Para poder completar tu registro en MusicPro necesitas confirmar tu cuenta siguiendo el enlace mostrado a continuación.
+
+http://{{domain}}{% url 'activate' uidb64=uid token=token %}
+
+Si no fuiste tú, porfavor ignora este email.
+
+{% endautoescape %}
