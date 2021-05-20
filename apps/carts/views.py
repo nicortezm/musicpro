@@ -3,7 +3,10 @@ from tienda.models import Product
 from .models import Cart, CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+porcentaje_descuento = 10
 
 
 def _cart_id(request):
@@ -14,51 +17,83 @@ def _cart_id(request):
 
 
 def add_cart(request, product_id):
+    current_user = request.user
     product = Product.objects.get(id=product_id)  # obtener el producto
-    try:
-        # get the cart using cart id in session key
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-    except Cart.DoesNotExist:
-        cart = Cart.objects.create(
-            cart_id=_cart_id(request)
-        )
-    cart.save()
+    if current_user.is_authenticated:
+        try:
+            # get the cart using cart id in session key
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(
+                cart_id=_cart_id(request)
+            )
+        cart.save()
+        try:
+            cart_item = CartItem.objects.get(product=product, user=current_user)
+            cart_item.quantity += 1
+            cart_item.save()
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(
+                product=product,
+                quantity=1,
+                user=current_user,
+            )
+            cart_item.save()
+    else:
+        try:
+            # get the cart using cart id in session key
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(
+                cart_id=_cart_id(request)
+            )
+        cart.save()
 
-    try:
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        cart_item.quantity += 1
-        cart_item.save()
-    except CartItem.DoesNotExist:
-        cart_item = CartItem.objects.create(
-            product=product,
-            quantity=1,
-            cart=cart,
-        )
-        cart_item.save()
-    # if 'cart' in str(request.path):
+        try:
+            cart_item = CartItem.objects.get(product=product, cart=cart)
+            cart_item.quantity += 1
+            cart_item.save()
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(
+                product=product,
+                quantity=1,
+                cart=cart,
+            )
+            cart_item.save()
     return redirect('cart')
-    # else:
-    # refrescar = '/tienda/' + str(product.category.slug) + '/'+ str(product.slug)
-    # return redirect(refrescar)
 
 
 def remove_cart(request, product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
-    if cart_item.quantity > 1:
-        cart_item.quantity -= 1
-        cart_item.save()
+    if request.user.is_authenticated:
+        cart_item = CartItem.objects.get(product=product, user=request.user)
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()
     else:
-        cart_item.delete()
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()
     return redirect('cart')
 
 
 def remove_cart_item(request, product_id):
-    cart = Cart.objects.get(cart_id=_cart_id(request))
-    product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
-    cart_item.delete()
+    if request.user.is_authenticated:
+        product = get_object_or_404(Product, id=product_id)
+        cart_item = CartItem.objects.get(product=product, user=request.user)
+        cart_item.delete()
+    
+    else:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        product = get_object_or_404(Product, id=product_id)
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+        cart_item.delete()
     return redirect('cart')
 
 
@@ -66,13 +101,16 @@ def cart(request, total=0, quantity=0, cart_items=None):
     try:    
         descuento = 0
         grand_total = 0
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
         if request.user.is_authenticated and (quantity >= 4):
-            descuento = int((4 * total)/100)
+            descuento = int((porcentaje_descuento * total)/100)
         grand_total = total - descuento
     except ObjectDoesNotExist:
         pass
@@ -86,18 +124,18 @@ def cart(request, total=0, quantity=0, cart_items=None):
     }
     return render(request, 'store/cart.html', context)
 
-
+@login_required(login_url='login')
 def checkout(request, total=0, quantity=0, cart_items=None):
     try:    
         descuento = 0
         grand_total = 0
         cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        cart_items = CartItem.objects.filter(user=request.user, is_active=True)
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
         if request.user.is_authenticated and (quantity >= 4):
-            descuento = int((4 * total)/100)
+            descuento = int((porcentaje_descuento * total)/100)
         grand_total = total - descuento
     except ObjectDoesNotExist:
         pass

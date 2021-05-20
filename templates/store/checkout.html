@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mb-4">Dirección de Envio</h4>
-                        <form action="">
+                        <form action="" method="POST">
                             <div class="form-row">
                                 <div class="col form-grup">
                                     <label for="">Nombre</label>
@@ -64,7 +64,7 @@
                                     <textarea type="text" name="comentarios" class="form-control"></textarea>
                                 </div>
                             </div>
-                        </form>
+
                     </div>
                 </div> <!-- card.// -->
 
@@ -134,8 +134,9 @@
                         <p class="text-center mb-3">
                             <img src="{% static 'images/misc/webpay.png' %}">
                         </p>
-                        <a href="./place-order.html" class="btn btn-primary btn-block"> Confirmar </a>
+                        <button type="submit" name="submit" class="btn btn-primary btn-block">Confirmar</button>
                         <a href="{% url 'store' %}" class="btn btn-light btn-block">Continuar Comprando</a>
+                        </form>
                     </div> <!-- card-body.// -->
                 </div> <!-- card.// -->
 
