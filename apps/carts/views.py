@@ -71,7 +71,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and (quantity >= 4):
             descuento = int((4 * total)/100)
         grand_total = total - descuento
     except ObjectDoesNotExist:
@@ -96,7 +96,7 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and (quantity >= 4):
             descuento = int((4 * total)/100)
         grand_total = total - descuento
     except ObjectDoesNotExist:
