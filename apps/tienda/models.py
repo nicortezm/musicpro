@@ -1,4 +1,6 @@
+from typing import DefaultDict
 from django.db import models
+from django.db.models.deletion import CASCADE
 from django.urls import reverse
 # Create your models here.
 
@@ -43,4 +45,21 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
- 
+
+variation_category_choice = (
+    ('color','Color'),
+    ('size','Tamaño')
+)
+class Variation(models.Model):
+    product = models.ForeignKey(Product,verbose_name="Producto",on_delete=models.CASCADE)
+    variation_category = models.CharField("Categoría variación",max_length=100,choices=variation_category_choice)
+    variation_value = models.CharField("Valor variación",max_length=100)
+    is_active = models.BooleanField("¿Está activa?",default=True)
+    created_date = models.DateTimeField("Fecha de creación",auto_now_add=True)
+
+    def __unicode__(self):
+        return self.product
+    
+    class Meta:
+        verbose_name = 'Variación'
+        verbose_name_plural = 'Variaciones'
