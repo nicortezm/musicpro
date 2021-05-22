@@ -50,6 +50,13 @@ variation_category_choice = (
     ('color','Color'),
     ('size','Tamaño')
 )
+
+class VariationManager(models.Manager):
+    def colors(self):
+        return super(VariationManager,self).filter(variation_category='color',is_active=True)
+    def sizes(self):
+        return super(VariationManager,self).filter(variation_category='size',is_active=True)
+
 class Variation(models.Model):
     product = models.ForeignKey(Product,verbose_name="Producto",on_delete=models.CASCADE)
     variation_category = models.CharField("Categoría variación",max_length=100,choices=variation_category_choice)
@@ -57,8 +64,10 @@ class Variation(models.Model):
     is_active = models.BooleanField("¿Está activa?",default=True)
     created_date = models.DateTimeField("Fecha de creación",auto_now_add=True)
 
-    def __unicode__(self):
-        return self.product
+    objects = VariationManager()
+
+    def __str__(self):
+        return self.variation_value
     
     class Meta:
         verbose_name = 'Variación'
