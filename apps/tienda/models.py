@@ -20,6 +20,16 @@ class Category(models.Model):
     def __str__(self):
         return self.category_name
 
+class Marca(models.Model):
+    marca_name = models.CharField("nombre marca",max_length=200,unique=True)
+    description = models.TextField("descripcion",max_length=500,blank=True)
+    class Meta:
+        verbose_name = 'Marca'
+        verbose_name_plural = 'Marcas'
+
+    def __str__(self):
+        return self.marca_name
+
 class Product(models.Model):
     product_name = models.CharField("nombre producto",max_length=200,unique=True)
     slug = models.SlugField(max_length=200,unique=True)
@@ -29,8 +39,8 @@ class Product(models.Model):
     stock = models.IntegerField()
     is_available = models.BooleanField("disponible",default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE,verbose_name = 'Categoria')
-
-    # Agregar Foreingkey marca.
+    marca = models.ForeignKey(Marca, on_delete=models.CASCADE,null=True,verbose_name = 'Marca')
+    
     # Agregar serial.
     created_date = models.DateField("Fecha creación",auto_now_add=True)
     modified_date = models.DateField("Fecha modificación",auto_now_add=True)
