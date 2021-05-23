@@ -35,11 +35,11 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200,unique=True)
     description = models.TextField("descripcion",max_length=500,blank=True)
     price = models.IntegerField("precio")
-    images = models.ImageField("imagenes",upload_to='photos/products')
+    images = models.ImageField("imagenes",upload_to='photos/products',null=True)
     stock = models.IntegerField()
     is_available = models.BooleanField("disponible",default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE,verbose_name = 'Categoria')
-    marca = models.ForeignKey(Marca, on_delete=models.CASCADE,null=True,verbose_name = 'Marca')
+    marca = models.ForeignKey(Marca, on_delete=models.PROTECT,null=True,verbose_name = 'Marca')
     
     # Agregar serial.
     created_date = models.DateField("Fecha creación",auto_now_add=True)

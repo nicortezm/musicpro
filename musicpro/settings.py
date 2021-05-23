@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'accounts',
     'tienda',
     'carts',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

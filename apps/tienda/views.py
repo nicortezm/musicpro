@@ -5,8 +5,23 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 
 from .models import Category, Product
+from rest_framework import viewsets
+from .serializers import ProductSerializer
 
 # Create your views here.
+
+class ProductViewset(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        products = Product.objects.all()
+
+        product_name = self.request.GET.get('product_name')
+
+        if product_name:
+            products = products.filter(product_name__contains=product_name)
+        return products
 
 def store(request, category_slug=None):
     categories = None
@@ -48,7 +63,6 @@ def product_detail(request, category_slug, product_slug):
         'in_cart': in_cart,
     }
     return render(request,'store/product_detail.html',context) 
-
 
 def search(request):
     products = ''
