@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load humanize %}
+<section class="section-content padding-y bg">
+  <div class="container">
+
+    <!-- ============================ COMPONENT 1 ================================= -->
+
+    <h4 class="text-center "> Revisa tu orden y haz el pedido</h4>
+    <br>
+    <div class="row">
+
+      <aside class="col-lg-8">
+        <div class="card">
+          <h5 class="card-header">Información de pago</h5>
+          <div class="card-body">
+            <p class="card-text mb-0">{{order.full_name | capfirst}} </p>
+            <p class="card-text mb-0">{{order.full_address | lower | capfirst}}</p>
+            <p class="card-text mb-0">{{order.region | lower | capfirst}} , {{order.comuna | lower | capfirst}}</p>
+            <p class="card-text mb-0">{{order.email | lower}} </p>
+            {% if order.comentarios %}
+            <b>Comentarios: </b> {{order.comentarios}}
+            {% endif %}
+
+          </div>
+        </div>
+        <br>
+        <div class="card">
+          <h5 class="card-header">Metodo de pago</h5>
+          <div class="card-body">
+
+            <p class="card-text">Webpay</p>
+          </div>
+        </div>
+        <br>
+        <div class="card">
+          <h5 class="card-header">Productos</h5>
+          <div class="card-body">
+            <table class="table table-borderless table-shopping-cart">
+              <thead class="text-muted">
+                <tr class="small text-uppercase">
+                  <th scope="col">Productos</th>
+                  <th scope="col" width="120">Cantidad</th>
+                  <th scope="col" width="120">Valor</th>
+                  <th scope="col" class="text-right" width="200"> </th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {% for cart_item in cart_items %}
+                <tr>
+                  <td>
+                    <figure class="itemside align-items-center">
+                      <div class="aside"><img src="{{ cart_item.product.images.url }}" class="img-sm">
+                      </div>
+                      <figcaption class="info">
+                        <a href="{{ cart_item.product.get_url}}" class="title text-dark">{{ cart_item.product.product_name }}</a>
+
+                        <p class="text-muted small">{% if cart_item.variations.all %}
+                          {% for item in cart_item.variations.all %}
+                          {{ item.get_variation_category_display }} :
+                          {{ item.variation_value}}
+                          <br>
+                          {% endfor %}
+                          {% endif %}</p>
+
+                      </figcaption>
+                    </figure>
+                  </td>
+                  <td>
+                    <p class="text-center">{{ cart_item.quantity }}</p>
+                  </td>
+                  <td>
+                    <div class="price-wrap">
+                      <var class="price">${{ cart_item.sub_total | intcomma}}</var>
+                      <small class="text-muted"> ${{ cart_item.product.price | intcomma }} c/u
+                      </small>
+                    </div> <!-- price-wrap .// -->
+                  </td>
+                </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br>
+      </aside> <!-- col.// -->
+      <aside class="col-lg-4">
+
+        <div class="card">
+          <div class="card-body">
+            <dl class="dlist-align">
+              <dt>Total:</dt>
+              <dd class="text-right">${{total | intcomma}}</dd>
+            </dl>
+            <dl class="dlist-align">
+              <dt>Descuento:</dt>
+              <dd class="text-right"> ${{descuento | intcomma}}</dd>
+            </dl>
+            <dl class="dlist-align">
+              <dt>Total a pagar:</dt>
+              <dd class="text-right text-dark b"><strong>${{grand_total | intcomma}}</strong></dd>
+            </dl>
+            <hr>
+            <p class="text-center mb-3">
+              <img src="{% static 'images/misc/webpay.png' %}" height="90">
+            </p>
+            <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Pagar </a>
+          </div> <!-- card-body.// -->
+        </div> <!-- card.// -->
+
+      </aside> <!-- col.// -->
+
+    </div> <!-- row.// -->
+
+    <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+  </div> <!-- container .//  -->
+</section>
+
+
+{% endblock content %}

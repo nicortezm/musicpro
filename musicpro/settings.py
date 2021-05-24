@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'carts',
     'django.contrib.humanize',
     'rest_framework',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -209,3 +210,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'djangodwy@gmail.com'
 EMAIL_HOST_PASSWORD = 'N@ncybern4l'
 EMAIL_USE_TLS = True
+
+# Descuento 
+
+DESCUENTO = 15
