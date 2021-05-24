@@ -7,46 +7,67 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 <!-- Bootstrap4 files-->
-<script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
-<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
+
+<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const ctx = document.getElementById('myChart').getContext('2d');
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('myChart').getContext('2d');
 
-  // Sample data
-  const chartData = [
-    {"date": "2019-05-08T00:00:00Z", "y": 3},
-    {"date": "2019-05-07T00:00:00Z", "y": 10},
-    {"date": "2019-05-06T00:00:00Z", "y": 15},
-    {"date": "2019-05-05T00:00:00Z", "y": 4},
-    {"date": "2019-05-03T00:00:00Z", "y": 2},
-    {"date": "2019-05-04T00:00:00Z", "y": 11},
-    {"date": "2019-05-02T00:00:00Z", "y": 3},
-    {"date": "2019-05-01T00:00:00Z", "y": 2},
-  ];
+    // Sample data
+    const chartData = [{
+        "date": "2019-05-08T00:00:00Z",
+        "y": 3
+      },
+      {
+        "date": "2019-05-07T00:00:00Z",
+        "y": 10
+      },
+      {
+        "date": "2019-05-06T00:00:00Z",
+        "y": 15
+      },
+      {
+        "date": "2019-05-05T00:00:00Z",
+        "y": 4
+      },
+      {
+        "date": "2019-05-03T00:00:00Z",
+        "y": 2
+      },
+      {
+        "date": "2019-05-04T00:00:00Z",
+        "y": 11
+      },
+      {
+        "date": "2019-05-02T00:00:00Z",
+        "y": 3
+      },
+      {
+        "date": "2019-05-01T00:00:00Z",
+        "y": 2
+      },
+    ];
 
-  // Parse the dates to JS
-  chartData.forEach((d) => {
-    d.x = new Date(d.date);
-  });
+    // Parse the dates to JS
+    chartData.forEach((d) => {
+      d.x = new Date(d.date);
+    });
 
-  // Render the chart
-  const chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      datasets: [
-        {
+    // Render the chart
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        datasets: [{
           label: 'Cantidad de visitas',
           data: chartData,
           backgroundColor: 'rgba(220,20,20,0.5)',
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      scales: {
-        xAxes: [
-          {
+        }, ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          xAxes: [{
             type: 'time',
             time: {
               unit: 'day',
@@ -55,25 +76,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 day: 'MMM D',
               },
             },
-          },
-        ],
-        yAxes: [
-          {
+          }, ],
+          yAxes: [{
             ticks: {
               beginAtZero: true,
             },
-          },
-        ],
+          }, ],
+        },
       },
-    },
+    });
   });
-});
 </script>
 {% endblock %}
 
 {% block content %}
 <!-- Render our chart -->
-<div >
+<div>
   <h1 class="h1 text-center">Gráficos</h1>
   <canvas style="margin-bottom: 30px; width: 60%; height: 60%;" id="myChart"></canvas>
   <div class="d-flex justify-content-center">
