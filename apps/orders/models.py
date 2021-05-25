@@ -5,10 +5,10 @@ from django.db import models
 # Create your models here.
 
 class Payment(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE,verbose_name="usuario")
+    user = models.ForeignKey(Account, on_delete=models.CASCADE,verbose_name="usuario",blank=True)
     payment_id = models.CharField("id pago",max_length=100)
     payment_method = models.CharField("metodo de pago",max_length=100) # Por ahora solo webpay
-    amount_paid = models.CharField("monto pagado",max_length=100) # Monto total pagado
+    amount_paid = models.IntegerField("monto pagado") # Monto total pagado
     status = models.CharField("estado",max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -40,9 +40,9 @@ class Order(models.Model):
     block = models.CharField(max_length=10, blank=True)
     num_dpto = models.CharField(max_length=10, blank=True)
     comentarios = models.CharField(max_length=100, blank=True)
-    order_total = models.FloatField("total orden")
-    descuento = models.FloatField()
-    status = models.CharField("estado",max_length=10, choices=STATUS, default='New')
+    order_total = models.IntegerField("total orden")
+    descuento = models.IntegerField()
+    status = models.CharField("estado",max_length=10, choices=STATUS, default='Nueva')
     ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -53,6 +53,7 @@ class Order(models.Model):
         verbose_name_plural = 'pedidos'
 
     def full_name(self):
+
         return f'{self.first_name} {self.last_name}'
 
     def full_address(self):
@@ -66,14 +67,14 @@ class Order(models.Model):
         return self.first_name
 
 class OrderProduct(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True) # Solo webpay
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variations = models.ManyToManyField(Variation, blank=True)
-    quantity = models.IntegerField()
-    product_price = models.FloatField()
-    ordered = models.BooleanField(default=False)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,verbose_name="orden")
+    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True,verbose_name="id pago") # Solo webpay
+    user = models.ForeignKey(Account, on_delete=models.CASCADE,verbose_name="usuario")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,verbose_name="producto")
+    variations = models.ManyToManyField(Variation, blank=True,verbose_name="variaciones")
+    quantity = models.IntegerField("cantidad")
+    product_price = models.FloatField("precio producto")
+    ordered = models.BooleanField("¿Completado?",default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
