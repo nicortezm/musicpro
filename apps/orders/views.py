@@ -15,15 +15,15 @@ from carts.views import _cart_id
 from carts.models import Cart
 from accounts.models import Account
 from datetime import date
+from django.views.decorators.csrf import csrf_exempt
 
 
-
-urlSite = 'http://localhost:8000/'
+urlSite = 'http://127.0.0.1:8000/'
 
 # Create your views here.
 Desc = settings.DESCUENTO
 
-
+@csrf_exempt
 def place_order(request, total=0, quantity=0):
     current_user = request.user
 
@@ -98,6 +98,7 @@ def place_order(request, total=0, quantity=0):
             return render(request,'orders/payments.html',context)
     else:
         return redirect('checkout')
+@csrf_exempt
 def WebpayConfirm(request):
     quantity = 0
     total = 0
