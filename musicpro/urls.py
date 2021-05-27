@@ -25,10 +25,11 @@ urlpatterns = [
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
     path('',views.home, name='home'),
-    path('tienda/',include('tienda.urls')),
-    path('cart/',include('carts.urls')),
-    path('accounts/',include('accounts.urls')),
+    path('tienda/',include('apps.tienda.urls')),
+    path('cart/',include('apps.carts.urls')),
+    path('accounts/',include('apps.accounts.urls')),
+    path('pedidos/',include('apps.orders.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "Administración MusicPro"
-admin.site.site_title = "MusicPro"
+admin.site.site_title = "MusicPro" 

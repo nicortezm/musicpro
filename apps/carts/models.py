@@ -1,7 +1,6 @@
-from tienda.models import Variation
+from apps.tienda.models import Variation,Product
 from django.db import models
-from tienda.models import Product
-from accounts.models import Account
+from apps.accounts.models import Account
 # Create your models here.
 
 class Cart(models.Model):
@@ -10,6 +9,9 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.cart_id
+    class Meta:
+        verbose_name = 'Carrito'
+        verbose_name_plural = 'Carritos'
 
     
 class CartItem(models.Model):
@@ -25,4 +27,7 @@ class CartItem(models.Model):
 
     def __unicode__(self):
         return self.product
+    class Meta:
+        verbose_name = 'ItemCarrito'
+        verbose_name_plural = 'ItemCarritos'
     

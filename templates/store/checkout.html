@@ -12,7 +12,7 @@
         <div class="card">
           <div class="card-body">
             <h4 clas="card-title mb-4"> Dirección de Envio </h4>
-            <form action="" method="POST" id="form-direccion">
+            <form action="{% url 'place_order' %}" method="POST" id="form-direccion">
               {% csrf_token %}
               <div class="form-row">
                 <div class="col form-grup">
@@ -122,7 +122,7 @@
               </tbody>
             </table>
 
-            <button type="submit" name="submit" form="form-direccion" class="btn btn-primary btn-block">Confirmar</button>
+            <button type="submit" name="submit" form="form-direccion" class="btn btn-primary btn-block">Realizar pedido</button>
             <a href="{% url 'store' %}" class="btn btn-light btn-block">Continuar Comprando</a>
           </div> <!-- card-body.// -->
         </div> <!-- card.// -->
