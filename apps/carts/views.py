@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import login
 from django.shortcuts import redirect, render, get_object_or_404
-from tienda.models import Product,Variation
+from apps.tienda.models import Product,Variation
 from .models import Cart, CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required

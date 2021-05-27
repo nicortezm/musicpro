@@ -1,5 +1,5 @@
-from carts.models import CartItem
-from carts.views import _cart_id
+from apps.carts.models import CartItem
+from apps.carts.views import _cart_id
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render

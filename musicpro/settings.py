@@ -47,12 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
-    'tienda',
-    'carts',
+    'apps.accounts',
+    'apps.tienda',
+    'apps.carts',
     'django.contrib.humanize',
     'rest_framework',
-    'orders',
+    'apps.orders',
 ]
 
 MIDDLEWARE = [
@@ -78,8 +78,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'tienda.context_processors.menu_links',
-                'carts.context_processors.counter',
+                'apps.tienda.context_processors.menu_links',
+                'apps.carts.context_processors.counter',
             ],
         },
     },

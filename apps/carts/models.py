@@ -1,7 +1,6 @@
-from tienda.models import Variation
+from apps.tienda.models import Variation,Product
 from django.db import models
-from tienda.models import Product
-from accounts.models import Account
+from apps.accounts.models import Account
 # Create your models here.
 
 class Cart(models.Model):

@@ -1,19 +1,16 @@
-from django.db.models.enums import Choices
-from orders.models import Payment
-from django.http.response import HttpResponseRedirect
-from orders.models import Order
-from orders.forms import OrderForm
+
+from apps.orders.models import Payment,Order
+
+from apps.orders.forms import OrderForm
 from django.shortcuts import redirect, render
-from carts.models import CartItem
+from apps.carts.models import CartItem
 from django.conf import settings
 import datetime
-import random
-from transbank.common.options import WebpayOptions
-from transbank.common.integration_type import IntegrationType
+
 from transbank.webpay.webpay_plus.transaction import Transaction
-from carts.views import _cart_id
-from carts.models import Cart
-from accounts.models import Account
+from apps.carts.views import _cart_id
+
+from apps.accounts.models import Account
 from datetime import date
 from django.views.decorators.csrf import csrf_exempt
 

@@ -1,5 +1,5 @@
-from tienda.models import Product, Variation
-from accounts.models import Account
+from apps.tienda.models import Product, Variation
+from apps.accounts.models import Account
 from django.db import models
 
 # Create your models here.

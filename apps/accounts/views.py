@@ -1,5 +1,5 @@
-from carts.models import Cart,CartItem
-from carts.views import _cart_id
+from apps.carts.models import Cart,CartItem
+from apps.carts.views import _cart_id
 from django.contrib import messages, auth
 from django.http.response import HttpResponse
 from .forms import RegistrationForm
@@ -13,7 +13,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
 import requests
-from orders.models import Order
+from apps.orders.models import Order
 # Create your views here.
 
 
