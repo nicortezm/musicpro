@@ -23,7 +23,7 @@ urlSite = 'http://127.0.0.1:8000/'
 # Create your views here.
 Desc = settings.DESCUENTO
 
-@csrf_exempt
+
 def place_order(request, total=0, quantity=0):
     current_user = request.user
 
@@ -81,10 +81,12 @@ def place_order(request, total=0, quantity=0):
 
             order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
             buy_order = order.order_number
-            session_id = 123123
+            session_id = _cart_id(request)
             amount = order.order_total
             return_url = urlSite + 'pedidos/confirm/'
             response = Transaction.create(buy_order, session_id, amount, return_url)
+            data.order_number = response.token
+            data.save()
             context = {
                 'response':response,
                 'order':order,
@@ -106,12 +108,12 @@ def WebpayConfirm(request):
     grand_total = 0
     today = date.today()
     fecha = today.strftime("%d/%m/%Y")
-    if request.POST['token_ws']:
+    try:
+        print(list(request.POST.items()))
         token = request.POST['token_ws']
         response = Transaction.commit(token)
-        user = Account.objects.get(email="nicoigcor@gmail.com")
-        order = Order.objects.get(user=user,is_ordered=False)
-        print(user)
+        order = Order.objects.get(order_number=token)
+        user = Account.objects.get(email=order.email)
         # if request.user.is_authenticated:
         pago = Payment.objects.create(user=user,payment_id=order.order_number,payment_method="WebPay",amount_paid=response.amount,status=response.status)
         
@@ -134,8 +136,9 @@ def WebpayConfirm(request):
             'cart': cart_items,
             'total': total,
             'descuento': descuento,
-            'grand_total': grand_total
-            }
+            'grand_total': grand_total,
+            'order':order
+        }
 
             
         # TODO: 
@@ -145,18 +148,17 @@ def WebpayConfirm(request):
         # Enviar email al comprador
         # Fixear el CSRF token en las cookies para evitar el logout
 
-
-
-    elif request.POST['TBK_TOKEN']:
-        tbk_token = request.POST['TBK_TOKEN']
-        tbk_orden_compra = request.POST['TBK_ORDEN_COMPRA']
-        tbk_id_sesion = request.POST['TBK_ID_SESION']
+    except:
+        # tbk_token = request.POST['TBK_TOKEN']
+        # tbk_orden_compra = request.POST['TBK_ORDEN_COMPRA']
+        # tbk_id_sesion = request.POST['TBK_ID_SESION']
+        # context = {
+        #     'tbk_token': tbk_token,
+        #     'tbk_orden_compra': tbk_orden_compra,
+        #     'tbk_id_sesion': tbk_id_sesion
+        # }
         context = {
-            'tbk_token': tbk_token,
-            'tbk_orden_compra': tbk_orden_compra,
-            'tbk_id_sesion': tbk_id_sesion
+            'error':'error'
         }
-    else:
-        context = {'error':'Malito'}
     return render(request, 'orders/confirm.html',context)
 

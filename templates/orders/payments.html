@@ -108,7 +108,9 @@
               <img src="{% static 'images/misc/webpay.png' %}" height="90">
             </p>
             <form action="{{response.url}}" method="POST" class="form-group">
+              <input type="hidden" name="user" value="{{ order.email }}">
               <input type="hidden" name="token_ws" value="{{response.token}}">
+              <input type="hidden" name="user" value="{{ order.email }}">
               <button type="submit" class="btn btn-primary">Ejecutar pago por Webpay</button>
             </form>
           </div> <!-- card-body.// -->

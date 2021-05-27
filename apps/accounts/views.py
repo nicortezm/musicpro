@@ -13,6 +13,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
 import requests
+from orders.models import Order
 # Create your views here.
 
 
@@ -148,6 +149,10 @@ def activate(request, uidb64, token):
 
 @login_required(login_url='login')
 def dashboard(request):
+    orders = Order.objects.filter(user=request.user)
+    context = {
+        'orders': orders
+    }
     return render(request, 'accounts/dashboard.html')
 
 
