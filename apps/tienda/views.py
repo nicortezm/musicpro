@@ -69,7 +69,7 @@ def search(request):
     if 's' in request.GET:
         keyword = request.GET['s']
         if keyword:
-            products = Product.objects.order_by('-created_date').filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword))
+            products = Product.objects.order_by('-created_date').filter(Q(category__category_name__icontains=keyword) | Q(slug__icontains=keyword))
         else:
             products = Product.objects.all()
     product_count = products.count()
