@@ -10,7 +10,8 @@ class AccountAdmin(UserAdmin):
     readonly_fields = ('last_login','date_joined')
     ordering = ('-date_joined',)
 
-    filter_horizontal = ()
+    filter_horizontal = ('groups', 'user_permissions')
+
     list_filter = ()
     fieldsets = ()
 
