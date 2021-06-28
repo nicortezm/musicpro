@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib import admin
 
+
+# admin.site.enable_nav_sidebar = False
 from . import views
 
 urlpatterns = [
@@ -33,3 +36,4 @@ urlpatterns = [
 
 admin.site.site_header = "Administración MusicPro"
 admin.site.site_title = "MusicPro" 
+admin.autodiscover()

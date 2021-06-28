@@ -1,5 +1,6 @@
 
-from apps.orders.models import Payment,Order
+from apps.tienda.models import Product
+from apps.orders.models import OrderProduct, Payment,Order
 
 from apps.orders.forms import OrderForm
 from django.shortcuts import redirect, render
@@ -99,63 +100,79 @@ def place_order(request, total=0, quantity=0):
         return redirect('checkout')
 @csrf_exempt
 def WebpayConfirm(request):
-    quantity = 0
-    total = 0
-    descuento = 0
-    grand_total = 0
-    today = date.today()
-    fecha = today.strftime("%d/%m/%Y")
-    try:
-        print(list(request.POST.items()))
-        token = request.POST['token_ws']
-        response = Transaction.commit(token)
-        order = Order.objects.get(order_number=token)
-        user = Account.objects.get(email=order.email)
-        # if request.user.is_authenticated:
-        pago = Payment.objects.create(user=user,payment_id=order.order_number,payment_method="WebPay",amount_paid=response.amount,status=response.status)
-        
-        if response.response_code == 0 and response.status == 'AUTHORIZED':
-            order.payment = pago
-            order.is_ordered = True
-            order.status = "Aceptada"
-            order.save()
-            cart_items = CartItem.objects.filter(user=user)
-            for cart_item in cart_items:
-                total += (cart_item.product.price * cart_item.quantity)
-                quantity += cart_item.quantity
-            if (quantity >= 4):
-                descuento = int((Desc * total)/100)
-            grand_total = total - descuento
-        context = {
-            'token': token,
-            'response': response,
-            'fecha': fecha,
-            'cart': cart_items,
-            'total': total,
-            'descuento': descuento,
-            'grand_total': grand_total,
-            'order':order
-        }
-
+    if request.POST['token_ws']:
+        quantity = 0
+        total = 0
+        descuento = 0
+        grand_total = 0
+        today = date.today()
+        fecha = today.strftime("%d/%m/%Y")
+        try:
+            token = request.POST['token_ws']
+            response = Transaction.commit(token)
+            order = Order.objects.get(order_number=token)
+            user = Account.objects.get(email=order.email)
+            pago = Payment.objects.create(user=user,payment_id=order.order_number,payment_method="WebPay",amount_paid=response.amount,status=response.status)
             
-        # TODO: 
-        # Mover los items comprados a la Tabla productos pedidos
-        # Disminuir la cantidad de productos vendidos
-        # Limpiar el carrito
-        # Enviar email al comprador
-        # Fixear el CSRF token en las cookies para evitar el logout
+            if response.response_code == 0 and response.status == 'AUTHORIZED':
+                order.payment = pago
+                order.is_ordered = True
+                order.status = "Aceptada"
+                order.save()
+                cart_items = CartItem.objects.filter(user=user)
+                for cart_item in cart_items:
+                    # Agregar a productos pedidos
+                    orderproduct = OrderProduct()
+                    orderproduct.order = order
+                    orderproduct.payment = pago
+                    orderproduct.user = user
+                    orderproduct.product_id = cart_item.product_id
+                    orderproduct.quantity = cart_item.quantity
+                    orderproduct.product_price = cart_item.product.price
+                    orderproduct.ordered = True
+                    orderproduct.save()
 
-    except:
-        # tbk_token = request.POST['TBK_TOKEN']
-        # tbk_orden_compra = request.POST['TBK_ORDEN_COMPRA']
-        # tbk_id_sesion = request.POST['TBK_ID_SESION']
-        # context = {
-        #     'tbk_token': tbk_token,
-        #     'tbk_orden_compra': tbk_orden_compra,
-        #     'tbk_id_sesion': tbk_id_sesion
-        # }
-        context = {
-            'error':'error'
-        }
-    return render(request, 'orders/confirm.html',context)
+                    # Disminuir cantidad producto
+                    product = Product.objects.get(id=cart_item.product_id)
+                    product.stock -= cart_item.quantity
+                    product.save()
+                    total += (cart_item.product.price * cart_item.quantity)
+                    quantity += cart_item.quantity
+                if (quantity >= 4):
+                    descuento = int((Desc * total)/100)
+                grand_total = total - descuento
 
+                CartItem.objects.filter(user=user).delete()
+            context = {
+                'token': token,
+                'response': response,
+                'fecha': fecha,
+                'cart': cart_items,
+                'total': total,
+                'descuento': descuento,
+                'grand_total': grand_total,
+                'order':order
+            }
+
+                
+            # TODO: 
+            # Mover los items comprados a la Tabla productos pedidos
+            # Disminuir la cantidad de productos vendidos
+            # Limpiar el carrito
+            # Enviar email al comprador
+            # Fixear el CSRF token en las cookies para evitar el logout
+
+        except:
+            # tbk_token = request.POST['TBK_TOKEN']
+            # tbk_orden_compra = request.POST['TBK_ORDEN_COMPRA']
+            # tbk_id_sesion = request.POST['TBK_ID_SESION']
+            # context = {
+            #     'tbk_token': tbk_token,
+            #     'tbk_orden_compra': tbk_orden_compra,
+            #     'tbk_id_sesion': tbk_id_sesion
+            # }
+            context = {
+                'error':'error'
+            }
+        return render(request, 'orders/confirm.html',context)
+    return render(request, 'orders/confirm.html')
